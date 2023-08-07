@@ -5,7 +5,7 @@ import com.google.api.services.docs.v1.model.*;
 
 import com.googlesheets.demo.Entity.Person;
 import com.googlesheets.demo.Repository.PersonRepository;
-import com.googlesheets.demo.config.AutenificationPrint;
+import com.googlesheets.demo.config.AutenificationPrintDocs;
 import com.googlesheets.demo.config.DriverConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class GoogleDocsService {
     @Autowired
     private PersonRepository personRepository;
     @Autowired
-    private AutenificationPrint autenificationPrint;
+    private AutenificationPrintDocs autenificationPrintDocs;
     @Autowired
     private DriverConfig driverConfig;
 
@@ -44,7 +44,7 @@ public class GoogleDocsService {
 
 
     public String readDocument(String DocumentId) throws IOException, GeneralSecurityException {
-        Docs docsService = autenificationPrint.getDocsService();
+        Docs docsService = autenificationPrintDocs.getDocsService();
         Document document = docsService.documents().get(DocumentId).execute();
 
         StringBuilder textContent = new StringBuilder();
@@ -118,7 +118,7 @@ public class GoogleDocsService {
                                 .setReplaceText(entry.getValue())))
                 .collect(Collectors.toList());
 
-        Docs docs = autenificationPrint.getDocsService();
+        Docs docs = autenificationPrintDocs.getDocsService();
         BatchUpdateDocumentRequest batchUpdateRequest = new BatchUpdateDocumentRequest().setRequests(requests);
 
         // Update the new document

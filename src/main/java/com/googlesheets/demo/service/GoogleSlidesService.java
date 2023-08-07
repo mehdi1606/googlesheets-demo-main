@@ -6,7 +6,8 @@ import com.google.api.services.slides.v1.model.*;
 
 import com.googlesheets.demo.Entity.Person;
 import com.googlesheets.demo.Repository.PersonRepository;
-import com.googlesheets.demo.config.AutenificationPrint;
+import com.googlesheets.demo.config.AutenificationPrintDocs;
+import com.googlesheets.demo.config.AutenificationPrintSlides;
 import com.googlesheets.demo.config.DriverConfig;
 
 import org.slf4j.Logger;
@@ -19,7 +20,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GoogleSlidesService {
@@ -31,14 +31,14 @@ public class GoogleSlidesService {
     @Autowired
     private PersonRepository personRepository;
     @Autowired
-    private AutenificationPrint autenificationPrint;
+    private AutenificationPrintSlides autenificationPrintSlides ;
     @Autowired
     private DriverConfig driverConfig;
 
     List<String> scopes = Collections.singletonList(SlidesScopes.PRESENTATIONS);
 
     public Presentation getPresentation(String presentationId) throws IOException, GeneralSecurityException {
-        Slides slidesService = autenificationPrint.getSlidesService();
+        Slides slidesService = autenificationPrintSlides.getSlidesService();
         Presentation presentation = slidesService.presentations().get(presentationId).execute();
         return presentation;
     }
@@ -100,7 +100,7 @@ public class GoogleSlidesService {
             requests.add(new Request().setReplaceAllText(replaceRequest));
         }
 
-        Slides slides = autenificationPrint.getSlidesService();
+        Slides slides = autenificationPrintSlides.getSlidesService();
         BatchUpdatePresentationRequest batchUpdateRequest = new BatchUpdatePresentationRequest().setRequests(requests);
 
         // Update the new presentation
