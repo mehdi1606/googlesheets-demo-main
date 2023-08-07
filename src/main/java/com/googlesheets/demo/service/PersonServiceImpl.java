@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -17,7 +18,9 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public List<Person> getAllPersons() {
-        return personRepository.findAll();
+        return personRepository.findAll().stream()
+                .filter(person -> !person.isDeleted())
+                .collect(Collectors.toList());
     }
 
     @Override

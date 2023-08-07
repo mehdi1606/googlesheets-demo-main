@@ -57,7 +57,7 @@ public class Person {
     @Column(name = "projectState")
     private String projectState;
 
-    @Column(name = "hasReceivedFunding")
+        @Column(name = "hasReceivedFunding")
     private boolean hasReceivedFunding;
 
     @Column(name = "currentHR")
@@ -68,6 +68,9 @@ public class Person {
 
     @Column(name = "region")
     private String region;
+
+    private boolean isDeleted;
+
 
 
 }
