@@ -27,7 +27,8 @@ public class GoogleSlidesService {
 
     @Value("1wIOkKHF-kLd85Ul29qm7y_2vw0DWkNq7_gvjffIPofs")
     private String presentationId;
-
+    @Autowired
+    private PersonService  personService;
     @Autowired
     private PersonRepository personRepository;
     @Autowired
@@ -51,7 +52,7 @@ public class GoogleSlidesService {
         LOGGER.info("Original presentation: " + presentation.getTitle());
 
         // Get the person and fill the placeholders as before
-        Optional<Person> personData = personRepository.findById(personId);
+        Optional<Person> personData = personService.getPersonById(personId);
         if (!personData.isPresent()) {
             throw new NoSuchElementException("Person not found");
         }
@@ -86,6 +87,8 @@ public class GoogleSlidesService {
         data.put("{statutjuridique}",personData.get().getCurrentLegalStatus());
         data.put("{descriptionprojet}",personData.get().getProjectDescription());
         data.put("{etatduprojet}",personData.get().getProjectState());
+        String boolAsString = String.valueOf(personData.get().isHasReceivedFunding());
+        data.put("{dejafinanc}",boolAsString);
         data.put("{rhactual}", String.valueOf(personData.get().getCurrentHR()));
         data.put("{rhprevisionel}", String.valueOf(personData.get().getProjectedHR()));
         data.put("{region}",personData.get().getRegion());

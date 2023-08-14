@@ -2,11 +2,13 @@ package com.googlesheets.demo.controller;
 
 import com.googlesheets.demo.Entity.Person;
 import com.googlesheets.demo.Repository.PersonRepository;
+import com.googlesheets.demo.service.PersonService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.wml.Text;
 import org.docx4j.finders.ClassFinder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.docx4j.TraversalUtil;
@@ -26,7 +28,8 @@ import static java.lang.Double.*;
 public class WordController {
 
     private final PersonRepository databaseService;
-
+@Autowired
+private PersonService  personService;
     public WordController(PersonRepository databaseService) {
         this.databaseService = databaseService;
     }
@@ -34,14 +37,14 @@ public class WordController {
     @SneakyThrows
     @GetMapping("/populateWordDoc/{id}")
     public void populateWordDoc(@PathVariable Long id) {
-        Person person = databaseService.findById(id).orElseThrow(() -> new Exception("Person not found"));
+        Person person = personService.getPersonById(id).orElseThrow(() -> new Exception("Person not found"));
         populateWordDocForIndividual(person);
     }
 
     @SneakyThrows
     @GetMapping("/populateWordDocForAll")
     public void populateWordDocForAll() {
-        List<Person> allPersons = databaseService.findAll();
+        List<Person> allPersons = personService.getAllPersons();
         for (Person person : allPersons) {
             populateWordDocForIndividual(person);
         }
@@ -115,10 +118,11 @@ public class WordController {
                 textValue = textValue.replace("(etatduprojet)", person. getProjectState());
                 textElement.setValue(textValue);
             }
-           /* if (textValue.contains("(dejafinanc)")) {
-                textValue = textValue.replace("(dejafinanc)", person. getHasReceivedFunding());
+            if (textValue.contains("dejafinanc")) {
+                String boolAsString = String.valueOf(person.isHasReceivedFunding());
+                textValue = textValue.replace("dejafinanc", boolAsString);
                 textElement.setValue(textValue);
-            }*/
+            }
             if (textValue.contains("(statutjuridique)")) {
                 textValue = textValue.replace("(statutjuridique)", person. getCurrentLegalStatus());
                 textElement.setValue(textValue);

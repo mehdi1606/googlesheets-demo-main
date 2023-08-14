@@ -2,9 +2,11 @@ package com.googlesheets.demo.controller;
 
 import com.googlesheets.demo.Entity.Person;
 import com.googlesheets.demo.Repository.PersonRepository;
+import com.googlesheets.demo.service.PersonService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xslf.usermodel.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileInputStream;
@@ -19,7 +21,8 @@ import java.util.Optional;
 public class PptController {
 
     private final PersonRepository databaseService;
-
+@Autowired
+private PersonService personService;
     public PptController(PersonRepository databaseService) {
         this.databaseService = databaseService;
     }
@@ -35,7 +38,7 @@ public class PptController {
     @SneakyThrows
     @GetMapping("/populatePptForAll")
     public void populatePptForAll() {
-        List<Person> allPersons = databaseService.findAll();
+        List<Person> allPersons = personService.getAllPersons();
         for (Person person : allPersons) {
             populatePptForIndividual(person);
         }
@@ -108,10 +111,10 @@ public class PptController {
                             if (textValue.contains("etatduprojet")) {
                                 run.setText(textValue.replace("etatduprojet", person. getProjectState()));
                             }
-           /* if (textValue.contains("dejafinanc")) {
-                textValue = textValue.replace("dejafinanc", person. getHasReceivedFunding());
-                textElement.setValue(textValue);
-            }*/
+                            if (textValue.contains("dejafinanc")) {
+                                String boolAsString = String.valueOf(person.isHasReceivedFunding());
+                                run.setText(textValue.replace("dejafinanc", boolAsString));
+                            }
                             if (textValue.contains("statutjuridique")) {
                                 run.setText(textValue.replace("statutjuridique", person. getCurrentLegalStatus()));
                             }

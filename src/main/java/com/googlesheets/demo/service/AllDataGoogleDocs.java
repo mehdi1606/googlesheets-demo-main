@@ -26,7 +26,8 @@ public class AllDataGoogleDocs {
 
     @Value("1S2KCBljZXwXFj-gRdv_I0f2VKNfEKZ4RdGJUDW42kc0")
     private String documentId;
-
+    @Autowired
+    private PersonService   personService;
     @Autowired
     private PersonRepository personRepository;
     @Autowired
@@ -55,7 +56,7 @@ public class AllDataGoogleDocs {
 
     public List<String> fillPlaceholdersForAll() throws IOException, GeneralSecurityException {
         // Retrieve all persons from the database
-        List<Person> allPersons = personRepository.findAll();
+        List<Person> allPersons = personService.getAllPersons();
 
         // This list will hold the response message for each person's document creation
         List<String> responses = new ArrayList<>();
@@ -76,10 +77,7 @@ public class AllDataGoogleDocs {
 
     private String fillPlaceholdersForBatchedIndividual(Person person, Docs docsService, com.google.api.services.drive.Drive driveService) throws IOException, GeneralSecurityException {
         // Read the template document content (assuming it's same for everyone)
-        String documentContent = readDocument(documentId);
 
-        // Log or analyse the content if necessary
-        LOGGER.info("Original content: " + documentContent);
 
         // Create a copy of the document
         com.google.api.services.drive.model.File file = new com.google.api.services.drive.model.File();
@@ -105,6 +103,8 @@ public class AllDataGoogleDocs {
         data.put("{statutjuridique}",person.getCurrentLegalStatus());
         data.put("{descriptionprojet}",person.getProjectDescription());
         data.put("{etatduprojet}",person.getProjectState());
+        String boolAsString = String.valueOf(person.isHasReceivedFunding());
+        data.put("{dejafinanc}",boolAsString);
         data.put("{rhactual}", String.valueOf(person.getCurrentHR()));
         data.put("{rhprevisionel}", String.valueOf(person.getProjectedHR()));
         data.put("{region}",person.getRegion());

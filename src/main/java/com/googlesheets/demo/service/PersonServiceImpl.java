@@ -26,9 +26,12 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Optional<Person> getPersonById(Long id) {
-        return personRepository.findById(id);
+        Optional<Person> personOpt = personRepository.findById(id);
+        if (personOpt.isPresent() && !personOpt.get().isDeleted()) {
+            return personOpt;
+        }
+        return Optional.empty();
     }
-
     @Override
     public Person createPerson(Person person) {
         Person savedPerson = personRepository.save(person);

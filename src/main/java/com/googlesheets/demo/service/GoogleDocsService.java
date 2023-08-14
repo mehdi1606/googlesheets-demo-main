@@ -26,7 +26,8 @@ public class GoogleDocsService {
 
     @Value("1S2KCBljZXwXFj-gRdv_I0f2VKNfEKZ4RdGJUDW42kc0")
     private String documentId;
-
+    @Autowired
+    private PersonService personaService;
     @Autowired
     private PersonRepository personRepository;
     @Autowired
@@ -71,7 +72,7 @@ public class GoogleDocsService {
         LOGGER.info("Original content: " + documentContent);
 
         // Récupération de la personne et remplissage des placeholders comme avant
-        Optional<Person> personData = personRepository.findById(personId);
+        Optional<Person> personData = personaService.getPersonById(personId);
         if (!personData.isPresent()) {
             throw new NoSuchElementException("Person not found");
         }
@@ -106,6 +107,8 @@ public class GoogleDocsService {
         data.put("{statutjuridique}",personData.get().getCurrentLegalStatus());
         data.put("{descriptionprojet}",personData.get().getProjectDescription());
         data.put("{etatduprojet}",personData.get().getProjectState());
+        String boolAsString = String.valueOf(personData.get().isHasReceivedFunding());
+        data.put("{dejafinanc}",boolAsString);
         data.put("{rhactual}", String.valueOf(personData.get().getCurrentHR()));
         data.put("{rhprevisionel}", String.valueOf(personData.get().getProjectedHR()));
         data.put("{region}",personData.get().getRegion());

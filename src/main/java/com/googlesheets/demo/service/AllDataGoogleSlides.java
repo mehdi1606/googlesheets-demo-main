@@ -31,7 +31,8 @@ public class AllDataGoogleSlides {
 
     @Value("1wIOkKHF-kLd85Ul29qm7y_2vw0DWkNq7_gvjffIPofs")
     private String presentationId;
-
+    @Autowired
+    private PersonService   personService;
     @Autowired
     private PersonRepository personRepository;
     @Autowired
@@ -46,7 +47,7 @@ public class AllDataGoogleSlides {
     }
 
     public List<String> fillPlaceholdersForAll() throws IOException, GeneralSecurityException {
-        List<Person> allPersons = personRepository.findAll();
+        List<Person> allPersons = personService.getAllPersons();
         List<String> responses = new ArrayList<>();
         com.google.api.services.drive.Drive driveService = driverConfig.getDriveService();
 
@@ -86,6 +87,8 @@ public class AllDataGoogleSlides {
         data.put("{statutjuridique}",person.getCurrentLegalStatus());
         data.put("{descriptionprojet}",person.getProjectDescription());
         data.put("{etatduprojet}",person.getProjectState());
+        String boolAsString = String.valueOf(person.isHasReceivedFunding());
+        data.put("{dejafinanc}",boolAsString);
         data.put("{rhactual}", String.valueOf(person.getCurrentHR()));
         data.put("{rhprevisionel}", String.valueOf(person.getProjectedHR()));
         data.put("{region}",person.getRegion());
