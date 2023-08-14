@@ -1,7 +1,8 @@
 package com.googlesheets.demo.controller;
 
-import com.googlesheets.demo.service.GoogleDocsService;
+import com.googlesheets.demo.service.AllDataGoogleSlides;
 import com.googlesheets.demo.service.GoogleSlidesService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,14 +16,23 @@ import java.security.GeneralSecurityException;
 public class GoogleSlidesController {
 
     private final GoogleSlidesService googleSlidesService;
+    @Autowired
+    private final AllDataGoogleSlides allDataGoogleSlides;
 
-    public GoogleSlidesController(GoogleSlidesService googleSlidesService) {
+
+    public GoogleSlidesController(GoogleSlidesService googleSlidesService, AllDataGoogleSlides allDataGoogleSlides) {
         this.googleSlidesService = googleSlidesService;
+        this.allDataGoogleSlides = allDataGoogleSlides;
     }
 
     @GetMapping("/UpdateGoogleSlide/{personId}")
-    public String updateGoogleDoc(@PathVariable Double personId) throws GeneralSecurityException, IOException {
+    public String updateGoogleSlide(@PathVariable Long personId) throws GeneralSecurityException, IOException {
 
         return googleSlidesService.fillPlaceholders(personId);
+    }
+    @GetMapping("/UpdateGoogleSlide/AllPresentation")
+    public String updateGoogleSlideALL() throws GeneralSecurityException, IOException {
+
+        return allDataGoogleSlides.fillPlaceholdersForAll().toString();
     }
 }

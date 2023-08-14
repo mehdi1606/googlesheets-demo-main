@@ -10,11 +10,11 @@ import java.util.Optional;
     public interface PersonService {
         List<Person> getAllPersons();
 
-        Optional<Person> getPersonById(Double id);
+        Optional<Person> getPersonById(Long id);
 
         Person createPerson(Person person);
 
-        Person updatePerson(Double id, Person updatedPerson);
+        Person updatePerson(Long id, Person updatedPerson);
 
-        String deletePerson(Double id);
+        String deletePerson(Long id);
     }

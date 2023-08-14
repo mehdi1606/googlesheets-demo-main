@@ -16,6 +16,7 @@ import org.docx4j.wml.Body;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Double.*;
@@ -32,14 +33,27 @@ public class WordController {
 
     @SneakyThrows
     @GetMapping("/populateWordDoc/{id}")
-    public void populateWordDoc(@PathVariable Double id) {
-        // Récupérez votre personne de la base de données en fonction de l'id
-        Optional<Person> person =  databaseService.findById(id);
+    public void populateWordDoc(@PathVariable Long id) {
+        Person person = databaseService.findById(id).orElseThrow(() -> new Exception("Person not found"));
+        populateWordDocForIndividual(person);
+    }
 
-        // Ouvrez votre document Word existant
-        WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(new java.io.File("C:\\Users\\hp\\Downloads\\Mehdi interface.docx"));
+    @SneakyThrows
+    @GetMapping("/populateWordDocForAll")
+    public void populateWordDocForAll() {
+        List<Person> allPersons = databaseService.findAll();
+        for (Person person : allPersons) {
+            populateWordDocForIndividual(person);
+        }
+    }
+    private void populateWordDocForIndividual(Person person) throws Exception {
+        // Specify your Word document file path
+        String inputFilePath = "C:\\Users\\hp\\Downloads\\Mehdi interface.docx";
+        String outputFilePath = "C:\\Users\\hp\\Desktop\\PrintDocs\\" + person.getLastName() + "_" + person.getId() + ".docx";
 
-        // Trouvez tous les éléments Text dans le document
+        WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(new java.io.File(inputFilePath));
+
+// Trouvez tous les éléments Text dans le document
         ClassFinder finder = new ClassFinder(Text.class);
 
         new TraversalUtil(wordMLPackage.getMainDocumentPart().getContent(), finder);
@@ -49,82 +63,81 @@ public class WordController {
             Text textElement = (Text) obj;
             String textValue = textElement.getValue();
             if (textValue.contains("(id)")) {
-                textValue = textValue.replace("(id)", String.valueOf(person.get().getId()));
+                textValue = textValue.replace("(id)", String.valueOf(person. getId()));
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(lastname)")) {
-                textValue = textValue.replace("(lastname)", person.get().getLastName());
+                textValue = textValue.replace("(lastname)", person. getLastName());
                 textElement.setValue(textValue);
             }
 
             if (textValue.contains("(firstname)")) {
-                textValue = textValue.replace("(firstname)", person.get().getFirstName());
+                textValue = textValue.replace("(firstname)", person. getFirstName());
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(genre)")) {
-                textValue = textValue.replace("(genre)", person.get().getGender());
+                textValue = textValue.replace("(genre)", person. getGender());
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(age)")) {
-                textValue = textValue.replace("(age)", String.valueOf(person.get().getAge()));
+                textValue = textValue.replace("(age)", String.valueOf(person. getAge()));
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(titre)")) {
-                textValue = textValue.replace("(titre)", person.get().getTitle());
+                textValue = textValue.replace("(titre)", person. getTitle());
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(zoneImplpr)")) {
-                textValue = textValue.replace("(zoneImplpr)", person.get().getImplementationZone());
+                textValue = textValue.replace("(zoneImplpr)", person. getImplementationZone());
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(etatlocal)")) {
-                textValue = textValue.replace("(etatlocal)", person.get().getLocaleState());
+                textValue = textValue.replace("(etatlocal)", person. getLocaleState());
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(statutactual)")) {
-                textValue = textValue.replace("(statutactual)", person.get().getCurrentLegalStatus());
+                textValue = textValue.replace("(statutactual)", person. getCurrentLegalStatus());
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(specialdiplome)")) {
-                textValue = textValue.replace("(specialdiplome)", person.get().getDegreeSpecialty());
+                textValue = textValue.replace("(specialdiplome)", person. getDegreeSpecialty());
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(nvetude)")) {
-                textValue = textValue.replace("(nvetude)", person.get().getEducationLevel());
+                textValue = textValue.replace("(nvetude)", person. getEducationLevel());
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(descriptionprojet)")) {
-                textValue = textValue.replace("(descriptionprojet)", person.get().getProjectDescription());
+                textValue = textValue.replace("(descriptionprojet)", person. getProjectDescription());
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(etatduprojet)")) {
-                textValue = textValue.replace("(etatduprojet)", person.get().getProjectState());
+                textValue = textValue.replace("(etatduprojet)", person. getProjectState());
                 textElement.setValue(textValue);
             }
            /* if (textValue.contains("(dejafinanc)")) {
-                textValue = textValue.replace("(dejafinanc)", person.get().getHasReceivedFunding());
+                textValue = textValue.replace("(dejafinanc)", person. getHasReceivedFunding());
                 textElement.setValue(textValue);
             }*/
             if (textValue.contains("(statutjuridique)")) {
-                textValue = textValue.replace("(statutjuridique)", person.get().getCurrentLegalStatus());
+                textValue = textValue.replace("(statutjuridique)", person. getCurrentLegalStatus());
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(rhactual)")) {
-                textValue = textValue.replace("(rhactual)", String.valueOf(person.get().getCurrentHR()));
+                textValue = textValue.replace("(rhactual)", String.valueOf(person. getCurrentHR()));
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(rhprevisionel)")) {
-                textValue = textValue.replace("(rhprevisionel)", String.valueOf(person.get().getProjectedHR()));
+                textValue = textValue.replace("(rhprevisionel)", String.valueOf(person. getProjectedHR()));
                 textElement.setValue(textValue);
             }
             if (textValue.contains("(region)")) {
-                textValue = textValue.replace("(region)", person.get().getRegion());
+                textValue = textValue.replace("(region)", person. getRegion());
                 textElement.setValue(textValue);
             }
 
         }
-
-        // Enregistrez le document
-        wordMLPackage.save(new java.io.File("C:\\Users\\hp\\Desktop\\googlesheets-demo-main\\src\\main\\resources\\output.docx"));
+        wordMLPackage.save(new java.io.File(outputFilePath));
     }
 }
+

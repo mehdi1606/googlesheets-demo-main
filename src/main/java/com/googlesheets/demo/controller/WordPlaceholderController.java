@@ -32,7 +32,7 @@
         @GetMapping("/fill-word-template/{id}")
         public String fillWordTemplate(@PathVariable Long id) {
             // Retrieve person data from the database based on personId
-            Optional<Person> optionalPerson = personRepository.findById(Double.valueOf(id));
+            Optional<Person> optionalPerson = personRepository.findById(Long.valueOf(id));
             if (optionalPerson.isEmpty()) {
                 return "Person not found!";
             }

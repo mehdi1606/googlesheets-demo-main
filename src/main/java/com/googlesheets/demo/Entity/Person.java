@@ -15,8 +15,9 @@ import javax.persistence.*;
 @Entity
 public class Person {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private  Double  id;
+    private  Long  id;
 
     @Column(name = "lastName")
     private String lastName;
@@ -69,8 +70,8 @@ public class Person {
     @Column(name = "region")
     private String region;
 
-    private boolean isDeleted;
-
+    @Builder.Default
+    private boolean isDeleted= false;
 
 
 }

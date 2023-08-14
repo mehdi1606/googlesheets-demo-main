@@ -10,7 +10,6 @@ import com.googlesheets.demo.config.GoogleAuthorizationConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,8 +22,8 @@ public class GoogleSheetsServiceImpl implements GoogleSheetsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleSheetsServiceImpl.class);
 
-    @Value("${spreadsheet.id}")
-    private String spreadsheetId;
+
+
 
     @Autowired
     private PersonRepository personRepository;
@@ -32,11 +31,11 @@ public class GoogleSheetsServiceImpl implements GoogleSheetsService {
     private GoogleAuthorizationConfig googleAuthorizationConfig;
 
     @Override
-    public void getSpreadsheetValues() throws IOException, GeneralSecurityException {
+    public void getSpreadsheetValues(String spreadsheetId) throws IOException, GeneralSecurityException {
         Sheets sheetsService = googleAuthorizationConfig.getSheetsService();
         Sheets.Spreadsheets.Values.BatchGet request =
                 sheetsService.spreadsheets().values().batchGet(spreadsheetId);
-        request.setRanges(getSpreadSheetRange());
+        request.setRanges(getSpreadSheetRange(spreadsheetId));
         request.setMajorDimension("ROWS");
         BatchGetValuesResponse response = request.execute();
         List<List<Object>> spreadSheetValues = response.getValueRanges().get(0).getValues();
@@ -49,7 +48,7 @@ public class GoogleSheetsServiceImpl implements GoogleSheetsService {
             Person person = new Person();
 
             // Set the values from the row to the corresponding properties of the Person entity
-            person.setId(Double.valueOf(row.get(0).toString()));
+            person.setId(Long.valueOf(row.get(0).toString()));
             person.setLastName(row.get(1).toString());
             person.setFirstName(row.get(1).toString());
             person.setGender(row.get(2).toString());
@@ -78,7 +77,7 @@ public class GoogleSheetsServiceImpl implements GoogleSheetsService {
 
     }
 
-    private List<String> getSpreadSheetRange() throws IOException, GeneralSecurityException {
+    private List<String> getSpreadSheetRange(String spreadsheetId) throws IOException, GeneralSecurityException {
         Sheets sheetsService = googleAuthorizationConfig.getSheetsService();
         Sheets.Spreadsheets.Get request = sheetsService.spreadsheets().get(spreadsheetId);
         Spreadsheet spreadsheet = request.execute();
@@ -88,4 +87,6 @@ public class GoogleSheetsServiceImpl implements GoogleSheetsService {
         return Collections.singletonList("R1C1:R".concat(String.valueOf(row))
                 .concat("C").concat(String.valueOf(col)));
     }
+
+
 }

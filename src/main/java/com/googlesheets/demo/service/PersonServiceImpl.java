@@ -17,24 +17,26 @@ public class PersonServiceImpl implements PersonService {
     private PersonRepository personRepository;
 
     @Override
-    public List<Person> getAllPersons() {
-        return personRepository.findAll().stream()
+    public  List<Person> getAllPersons() {
+        List<Person> allPersons = personRepository.findAll();
+        return allPersons.stream()
                 .filter(person -> !person.isDeleted())
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Person> getPersonById(Double id) {
+    public Optional<Person> getPersonById(Long id) {
         return personRepository.findById(id);
     }
 
     @Override
     public Person createPerson(Person person) {
-        return personRepository.save(person);
+        Person savedPerson = personRepository.save(person);
+        return savedPerson;
     }
 
     @Override
-    public Person updatePerson(Double id, Person updatedPerson) {
+    public Person updatePerson(Long id, Person updatedPerson) {
         updatedPerson.setId(id);
         Person person = personRepository.findById(updatedPerson.getId()).orElse(null);
         if (person != null) {
@@ -49,7 +51,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public String deletePerson(Double id) {
+    public String deletePerson(Long id) {
         Person person = personRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Person not found with ID: " + id));
         personRepository.delete(person);

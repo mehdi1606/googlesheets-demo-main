@@ -43,7 +43,7 @@ public class GoogleSlidesService {
         return presentation;
     }
 
-    public String fillPlaceholders( Double personId) throws IOException, GeneralSecurityException {
+    public String fillPlaceholders( Long personId) throws IOException, GeneralSecurityException {
         // Get the presentation
         Presentation presentation = getPresentation(presentationId);
 

@@ -24,16 +24,30 @@ public class PptController {
         this.databaseService = databaseService;
     }
 
+
     @SneakyThrows
     @GetMapping("/populatePpt/{id}")
-    public void populatePpt(@PathVariable Double id) {
-        // Retrieve your person from the database based on the id
-        Optional<Person> person =  databaseService.findById(id);
+    public void populatePpt(@PathVariable Long id) {
+        Person person = databaseService.findById(id).orElseThrow(() -> new Exception("Person not found"));
+        populatePptForIndividual(person);
+    }
 
-        // Open your existing PowerPoint document
-        XMLSlideShow ppt = new XMLSlideShow(new FileInputStream("C:\\Users\\hp\\Downloads\\print.pptx"));
+    @SneakyThrows
+    @GetMapping("/populatePptForAll")
+    public void populatePptForAll() {
+        List<Person> allPersons = databaseService.findAll();
+        for (Person person : allPersons) {
+            populatePptForIndividual(person);
+        }
+    }
+    private void populatePptForIndividual(Person person) throws Exception {
+        // Specify your PowerPoint file path
+        String inputFilePath = "C:\\Users\\hp\\Downloads\\print.pptx";
+        String outputFilePath = "C:\\Users\\hp\\Desktop\\pptPrint\\" + person.getLastName() + "_" + person.getId() + ".pptx";
 
-        // Go through each slide in the PowerPoint
+        XMLSlideShow ppt = new XMLSlideShow(new FileInputStream(inputFilePath));
+
+// Go through each slide in the PowerPoint
         for (XSLFSlide slide : ppt.getSlides()) {
             for (XSLFShape shape : slide) {
                 if (shape instanceof XSLFTextShape) {
@@ -45,81 +59,80 @@ public class PptController {
                             String textValue = run.getRawText();
                             // Replace placeholders in the text
                             if (textValue.contains("id")) {
-                                run.setText(textValue.replace("id", String.valueOf(person.get().getId())));
+                                run.setText(textValue.replace("id", String.valueOf(person.getId())));
                             }
                             if (textValue.contains("lastname")) {
-                                run.setText(textValue.replace("lastname", person.get().getLastName()));
+                                run.setText(textValue.replace("lastname", person. getLastName()));
 
                             }
 
                             if (textValue.contains("firstname")) {
-                                run.setText(textValue.replace("firstname", person.get().getFirstName()));
+                                run.setText(textValue.replace("firstname", person.getFirstName()));
                             }
                             if (textValue.contains("(genre)")) {
-                                run.setText(textValue.replace("(genre)", person.get().getGender()));
+                                run.setText(textValue.replace("(genre)", person. getGender()));
 
                             }
                             if (textValue.contains("(age)")) {
-                                run.setText(textValue.replace("(age)", String.valueOf(person.get().getAge())));
+                                run.setText(textValue.replace("(age)", String.valueOf(person. getAge())));
 
                             }
                             if (textValue.contains("titre")) {
-                                run.setText(textValue.replace("titre", person.get().getTitle()));
+                                run.setText(textValue.replace("titre", person. getTitle()));
 
                             }
                             if (textValue.contains("zoneImplpr")) {
-                                run.setText( textValue.replace("zoneImplpr", person.get().getImplementationZone()));
+                                run.setText( textValue.replace("zoneImplpr", person. getImplementationZone()));
 
                             }
                             if (textValue.contains("etatlocal")) {
-                                run.setText( textValue.replace("etatlocal", person.get().getLocaleState()));
+                                run.setText( textValue.replace("etatlocal", person. getLocaleState()));
 
                             }
                             if (textValue.contains("statutactual")) {
-                                run.setText(textValue.replace("statutactual", person.get().getCurrentLegalStatus()));
+                                run.setText(textValue.replace("statutactual", person. getCurrentLegalStatus()));
 
                             }
                             if (textValue.contains("specialdiplome")) {
-                                run.setText(textValue.replace("specialdiplome", person.get().getDegreeSpecialty()));
+                                run.setText(textValue.replace("specialdiplome", person. getDegreeSpecialty()));
 
                             }
                             if (textValue.contains("nvetude")) {
-                                run.setText( textValue.replace("nvetude", person.get().getEducationLevel()));
+                                run.setText( textValue.replace("nvetude", person. getEducationLevel()));
 
                             }
                             if (textValue.contains("descriptionprojet")) {
-                                run.setText( textValue.replace("descriptionprojet", person.get().getProjectDescription()));
+                                run.setText( textValue.replace("descriptionprojet", person. getProjectDescription()));
 
                             }
                             if (textValue.contains("etatduprojet")) {
-                                run.setText(textValue.replace("etatduprojet", person.get().getProjectState()));
+                                run.setText(textValue.replace("etatduprojet", person. getProjectState()));
                             }
            /* if (textValue.contains("dejafinanc")) {
-                textValue = textValue.replace("dejafinanc", person.get().getHasReceivedFunding());
+                textValue = textValue.replace("dejafinanc", person. getHasReceivedFunding());
                 textElement.setValue(textValue);
             }*/
                             if (textValue.contains("statutjuridique")) {
-                                run.setText(textValue.replace("statutjuridique", person.get().getCurrentLegalStatus()));
+                                run.setText(textValue.replace("statutjuridique", person. getCurrentLegalStatus()));
                             }
                             if (textValue.contains("rhactual")) {
-                                run.setText(textValue.replace("rhactual", String.valueOf(person.get().getCurrentHR())));
+                                run.setText(textValue.replace("rhactual", String.valueOf(person. getCurrentHR())));
                             }
                             if (textValue.contains("rhprevisionel")) {
-                                run.setText( textValue.replace("rhprevisionel", String.valueOf(person.get().getProjectedHR())));
+                                run.setText( textValue.replace("rhprevisionel", String.valueOf(person. getProjectedHR())));
                             }
                             if (textValue.contains("(region)")) {
-                                run.setText(textValue.replace("(region)", person.get().getRegion()));
+                                run.setText(textValue.replace("(region)", person. getRegion()));
                             }
                         }
                     }
                 }
             }
         }
-
-        // Save the PowerPoint
-        FileOutputStream out = new FileOutputStream("C:\\Users\\hp\\Desktop\\googlesheets-demo-main\\src\\main\\resources\\output.pptx");
+        FileOutputStream out = new FileOutputStream(outputFilePath);
         ppt.write(out);
         out.close();
         ppt.close();
     }
+
 }

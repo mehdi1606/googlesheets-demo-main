@@ -45,7 +45,7 @@ public class ExcelService {
                 Person person = new Person();
 
                try {
-                    person.setId( row.getCell(0).getNumericCellValue());
+                    person.setId((long) row.getCell(0).getNumericCellValue());
                     log.info("setId: " +  row.getCell(0).getNumericCellValue());
                 } catch (NumberFormatException e) {
                     log.error("Invalid ID format at row " + (row.getRowNum() + 1));

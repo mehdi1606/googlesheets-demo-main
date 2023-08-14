@@ -45,18 +45,18 @@ public class    GoogleSheetsController {
 
 
 
-    @GetMapping()
-    public String getSpreadsheetValues() throws IOException, GeneralSecurityException {
-       googleSheetsService.getSpreadsheetValues();
+    @GetMapping("/{spreadsheetId}")
+    public String getSpreadsheetValues(@PathVariable String spreadsheetId) throws IOException, GeneralSecurityException {
+       googleSheetsService.getSpreadsheetValues(spreadsheetId);
         return "OK";
     }
     @GetMapping("/persons")
     public List<Person> allPersons() throws IOException, GeneralSecurityException {
-        return  personService.getAllPersons();
+        return personService.getAllPersons();
     }
 
     @GetMapping("/persons/{id}")
-    public Optional<Person> getPersonById(@PathVariable Double  id) {
+    public Optional<Person> getPersonById(@PathVariable Long  id) {
         return personService.getPersonById(id);
     }
     @PostMapping("/persons")
@@ -64,12 +64,12 @@ public class    GoogleSheetsController {
         return personService.createPerson(person);
     }
     @PutMapping("/persons/{id}")
-    public Person updatePerson(@PathVariable Double  id, @RequestBody Person updatedPerson) {
+    public Person updatePerson(@PathVariable Long  id, @RequestBody Person updatedPerson) {
         return  personService.updatePerson(id, updatedPerson);
 
     }
     @DeleteMapping("/persons/{id}")
-    public ResponseEntity<Object> deletePerson(@PathVariable Double id) {
+    public ResponseEntity<Object> deletePerson(@PathVariable Long id) {
         Optional<Person> existingPersonOptional = personService.getPersonById(id);
         if (!existingPersonOptional.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find person");

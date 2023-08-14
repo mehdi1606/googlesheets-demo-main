@@ -1,10 +1,10 @@
 package com.googlesheets.demo.controller;
 
+import com.googlesheets.demo.Entity.Person;
+import com.googlesheets.demo.service.AllDataGoogleDocs;
 import com.googlesheets.demo.service.GoogleDocsService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -13,14 +13,23 @@ import java.security.GeneralSecurityException;
 public class GoogleDocsController {
 
     private final GoogleDocsService googleDocsService;
+    @Autowired
+    private final AllDataGoogleDocs allDataService;
 
-    public GoogleDocsController(GoogleDocsService googleDocsService) {
+
+    public GoogleDocsController(GoogleDocsService googleDocsService, AllDataGoogleDocs allDataService) {
         this.googleDocsService = googleDocsService;
+        this.allDataService = allDataService;
     }
 
     @GetMapping("/updateGoogleDoc/{personId}")
-    public String updateGoogleDoc(@PathVariable Double personId) throws GeneralSecurityException, IOException {
+    public String updateGoogleDoc(@PathVariable Long personId) throws GeneralSecurityException, IOException {
 
         return googleDocsService.fillPlaceholders(personId);
+    }
+    @GetMapping("/updateGoogleDoc/AllDocuments")
+    public String updateGoogleDocALL() throws GeneralSecurityException, IOException {
+
+        return allDataService.fillPlaceholdersForAll().toString();
     }
 }
