@@ -40,15 +40,15 @@ public class DriverConfig {
 
     @Value("${application.name}")
     private String applicationName;
-    @Value("${credentials.file.path2}")
-    private String credentialsFilePath2;
+    @Value("${credentials.file.path}")
+    private String credentialsFilePath;
     @Value("${tokens.directory.path2}")
     private String tokensDirectoryPath2;
 
 
 
     public Credential authorize(List<String> scopes) throws IOException, GeneralSecurityException {
-        InputStream in = GoogleAuthorizationConfig.class.getResourceAsStream(credentialsFilePath2);
+        InputStream in = GoogleAuthorizationConfig.class.getResourceAsStream(credentialsFilePath);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
 

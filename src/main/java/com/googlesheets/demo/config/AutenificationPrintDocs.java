@@ -30,15 +30,15 @@ public class AutenificationPrintDocs {
 
     @Value("${application.name}")
     private String applicationName;
-    @Value("${credentials.file.path1}")
-    private String credentialsFilePath1;
+    @Value("${credentials.file.path}")
+    private String credentialsFilePath;
     @Value("${tokens.directory.path1}")
     private String tokensDirectoryPath1;
 
 
 
     public Credential authorize(List<String> scopes) throws IOException, GeneralSecurityException {
-        InputStream in = GoogleAuthorizationConfig.class.getResourceAsStream(credentialsFilePath1);
+        InputStream in = GoogleAuthorizationConfig.class.getResourceAsStream(credentialsFilePath);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
 
